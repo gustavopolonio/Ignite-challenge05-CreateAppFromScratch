@@ -1,1 +1,60 @@
-// TODO
+.postsContent {
+  max-width: 720px;
+  margin: 1.5rem auto 0;
+}
+
+.post {
+
+  > a {
+    font-weight: 700;
+    font-size: 1.75rem;
+
+    &:hover {
+      color: var(--pink);
+    }
+
+    transition: color 0.2s;
+  }
+
+  > p {
+    margin-top: 0.5rem;
+    color: var(--grey-400);
+    font-size: 1.125rem;
+  }
+
+  & + .post {
+    margin-top: 3rem; 
+  }
+
+  .postDetails {
+    display: flex;
+    align-items: center;
+    margin-top: 1.5rem;
+    font-size: 0.875rem;
+
+    time {
+      margin-right: 1.5rem;
+    }
+
+    time, div {
+      display: flex;
+      align-items: center;
+      color: var(--grey-500);
+
+      svg {
+        width: 20px;
+        height: 20px;
+        margin-right: 0.5rem;
+      }
+    }
+  }
+}
+
+.loadMorePosts {
+  color: var(--pink);
+  font-size: 1.125rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: block;
+  margin-top: 4rem;
+}

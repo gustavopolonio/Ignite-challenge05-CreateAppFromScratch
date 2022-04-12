@@ -1,0 +1,41 @@
+{
+  "id": "7fecad6c-5028-459e-ad41-c39e67b5c0df",
+  "uid": "neque-consequatur-quisquam",
+  "type": "Posts",
+  "data": {
+    "title": "repurpose vertical e-markets",
+    "subtitle": "monetize enterprise relationships",
+    "author": "grow vertical initiatives",
+    "banner": {
+      "dimensions": {
+        "width": 900,
+        "height": 500
+      },
+      "alt": "Placeholder image",
+      "copyright": null,
+      "url": "https://images.unsplash.com/photo-1591012911207-0dbac31f37da?w=900&h=500&fit=crop"
+    },
+    "content": [
+      {
+        "heading": "synthesize compelling content",
+        "body": [
+          {
+            "type": "paragraph",
+            "text": "Deserunt sunt commodo incididunt enim eiusmod ullamco. In incididunt tempor ea nulla.",
+            "spans": []
+          }
+        ]
+      },
+      {
+        "heading": "maximize extensible schemas",
+        "body": [
+          {
+            "type": "paragraph",
+            "text": "Non nulla culpa officia qui Lorem.",
+            "spans": []
+          }
+        ]
+      }
+    ]
+  }
+}

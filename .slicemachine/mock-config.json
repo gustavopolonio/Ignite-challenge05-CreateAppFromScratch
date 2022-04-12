@@ -1,0 +1,13 @@
+{
+  "_cts": {
+    "Repeatable": {},
+    "Posts": {}
+  },
+  "slices": {
+    "Posts": {
+      "default": {
+        "primary": {}
+      }
+    }
+  }
+}
