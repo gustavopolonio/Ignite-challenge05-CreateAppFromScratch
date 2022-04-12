@@ -1,1 +1,50 @@
-// TODO
+.container {
+  > img {
+    width: 100%;
+  }
+}
+
+.articleContent {
+  max-width: 720px;
+  margin: 5rem auto 0;
+
+  h1 {
+    font-size: 3rem;
+  }
+
+  .postDetails {
+    margin-top: 1.5rem;
+    display: flex;
+    align-items: center;
+
+    time, div {
+      display: flex;
+      align-items: center;
+      font-size: 0.875rem;
+      color: var(--grey-500);
+
+      svg {
+        width: 20px;
+        height: 20px;
+        margin-right: 0.5rem;
+      }
+    }
+
+    div {
+      margin-left: 1.5rem;
+    }
+  }
+}
+
+.textArea {
+  margin-top: 4rem;
+
+  h2 {
+    font-size: 2.25rem;
+  }
+
+  p {
+    font-size: 1.125rem;
+    color: var(--grey-400);
+  }
+}

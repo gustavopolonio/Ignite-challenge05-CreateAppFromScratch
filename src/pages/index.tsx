@@ -1,5 +1,6 @@
 import { GetStaticProps } from 'next';
 import { createClient } from '../services/prismic';
+import { useState } from 'react'
 
 import { FiCalendar } from 'react-icons/fi'
 import { FiUser } from 'react-icons/fi'
@@ -27,12 +28,38 @@ interface HomeProps {
 }
 
 export default function Home({ postsPagination }: HomeProps) {
+  const [nextPage, setNextPage] = useState(postsPagination.next_page)
+  const [results, setResults] = useState(postsPagination.results)
+
+  async function handleLoadPosts() {
+    const nextPageData: PostPagination = await fetch(nextPage)
+      .then(response => response.json())
+      .then(data => {
+        return data
+      })
+
+    setNextPage(nextPageData.next_page)
+
+    const nextPagePosts = nextPageData.results.map((post): Post => {
+      return {
+        uid: post.uid,
+        first_publication_date: post.first_publication_date,
+        data: {
+          title: post.data.title,
+          subtitle: post.data.subtitle,
+          author: post.data.author,
+        }
+      }
+    })
+
+    setResults([...results, ...nextPagePosts])
+  }
 
   return (
     <main>
       <div className={styles.postsContent}>
-
-        { postsPagination.results.map(result => (
+ 
+        { results.map(result => (
           <div key={result.uid} className={styles.post}>
             <a href="#">{result.data.title}</a>
             <p>{result.data.subtitle}</p>
@@ -47,11 +74,17 @@ export default function Home({ postsPagination }: HomeProps) {
               </div>
             </div>
           </div>
-        ))}
+        ))} 
 
         { 
-          postsPagination.next_page && 
-          <strong className={styles.loadMorePosts}>Carregar mais posts</strong> 
+          nextPage && 
+          <button 
+            type="button" 
+            className={styles.loadMorePosts}
+            onClick={handleLoadPosts}
+          >
+            Carregar mais posts
+          </button> 
         }
         
       </div>
@@ -67,10 +100,11 @@ export const getStaticProps: GetStaticProps = async () => {
 
   // console.log('post', JSON.stringify(postsResponse, null, 2))
   const next_page = postsResponse.next_page
+  // console.log('next_page', next_page)
 
   const results = postsResponse.results.map(post => {
     return {
-      uid: post.slugs,
+      uid: post,
       first_publication_date: post.first_publication_date,
       data: {
         title: post.data.title,
@@ -81,7 +115,6 @@ export const getStaticProps: GetStaticProps = async () => {
   })
 
   const postsPagination = { next_page, results }
-  console.log('postsPagination', postsPagination)
 
   return {
     props: { postsPagination },

@@ -52,9 +52,9 @@
 
 .loadMorePosts {
   color: var(--pink);
+  background: transparent;
+  border: none;
   font-size: 1.125rem;
   font-weight: 600;
-  cursor: pointer;
-  display: block;
   margin-top: 4rem;
 }
