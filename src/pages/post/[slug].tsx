@@ -1,5 +1,9 @@
 import { GetStaticPaths, GetStaticProps } from 'next';
+import { useState } from 'react'
 import { createClient } from '../../services/prismic';
+import { format } from 'date-fns'
+import ptBR from 'date-fns/locale/pt-BR'
+import { RichText } from 'prismic-dom'
 
 import { FiCalendar } from 'react-icons/fi'
 import { FiUser } from 'react-icons/fi'
@@ -29,70 +33,108 @@ interface PostProps {
   post: Post;
 }
 
-export default function Post() {
+export default function Post({ post }: PostProps) {
+  // console.log('post', post)
+
+  // Read time - considering human reads 200 words per minute
+  const words = post.data.content.reduce((acc, content) => {
+    acc += content.heading.split(' ').length
+
+    content.body.map(cont => {
+      acc += RichText.asText(cont.text).split(' ').length
+    })
+
+    return acc
+  }, 0)
+
+  const readTime = Math.ceil(words / 200) // In minutes
 
   return (
     <main className={styles.container}>
-      <img src="/mainBanner.png" alt="main banner" />
+      <img src={post.data.banner.url} alt="main banner" />
 
       <article className={styles.articleContent}>
-        <h1>Criando um app CRA do zero</h1>
+        <h1>{post.data.title}</h1>
 
         <div className={styles.postDetails}>
           <time>
             <FiCalendar />
-            15 Mar 2022
+            {post.first_publication_date}
           </time>
           <div>
             <FiUser />
-            Gustavo Polonio
+            {post.data.author}
           </div>
           <div>
             <FiClock />
-            4 min
+            {readTime} min
           </div>
         </div>
 
-        <div className={styles.textArea}>
-          <h2>Proin et varius</h2>
-          <p>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-
-            Nullam dolor sapien, vulputate eu diam at, condimentum hendrerit tellus. Nam facilisis sodales felis, pharetra pharetra lectus auctor sed.
-
-            Ut venenatis mauris vel libero pretium, et pretium ligula faucibus. Morbi nibh felis, elementum a posuere et, vulputate et erat. Nam venenatis.
-          </p>
-
-          <h2>Cras laoreet mi</h2>
-          <p>
-            Nulla auctor sit amet quam vitae commodo. Sed risus justo, vulputate quis neque eget, dictum sodales sem. In eget felis finibus, mattis magna a, efficitur ex. Curabitur vitae justo consequat sapien gravida auctor a non risus. Sed malesuada mauris nec orci congue, interdum efficitur urna dignissim. Vivamus cursus elit sem, vel facilisis nulla pretium consectetur. Nunc congue.
-          </p>
-        </div>
+        {post.data.content.map(paragraph => (
+          <div key={paragraph.heading} className={styles.textArea}>
+            <h2>{paragraph.heading}</h2>
+            {paragraph.body.map(textContent => (
+              <div 
+                key={textContent.text}
+                className={styles.textAreaContent}
+                dangerouslySetInnerHTML={{ __html: RichText.asHtml(textContent.text) }}
+              />
+            ))}
+          </div>
+        ))}
+        
       </article>
     </main>
   )
 }
 
 export const getStaticPaths = async () => {
-  // const prismic = getPrismicClient();
-  // const posts = await prismic.query(TODO);
+  const prismic = createClient();
+  const postsResponse = await prismic.getByType('Posts')
+
+  const paths = postsResponse.results.map((post) => {
+    return {
+      params: {
+        slug: post.uid
+      }
+    }
+  })
 
   return {
-    paths: [],
+    paths,
     fallback: true
   }
 };
 
 export const getStaticProps: GetStaticProps = async context => {
   const { slug } = context.params
-  // console.log('slug', typeof(slug))
 
   const prismic = createClient();
   const response = await prismic.getByUID('Posts', slug.toString())
 
-  console.log('response', response)
+  const post = {
+    first_publication_date: format(
+      new Date(response.first_publication_date),
+      "dd MMM yyyy", { locale: ptBR }
+    ),
+    data: {
+      title: response.data.title,
+      banner: {
+        url: response.data.banner.url
+      },
+      author: response.data.author,
+      content: response.data.content.map(paragraph => ({
+        heading: paragraph.heading,
+        body: [{
+          text: paragraph.body
+        }],   
+      }))      
+    }
+  }
 
+  // console.log('post', JSON.stringify(post, null, 2))
   return {
-    props: {}
+    props: { post }
   }
 };

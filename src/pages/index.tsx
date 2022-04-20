@@ -1,6 +1,9 @@
 import { GetStaticProps } from 'next';
+import Link from 'next/link'
 import { createClient } from '../services/prismic';
 import { useState } from 'react'
+import { format } from 'date-fns'
+import ptBR from 'date-fns/locale/pt-BR'
 
 import { FiCalendar } from 'react-icons/fi'
 import { FiUser } from 'react-icons/fi'
@@ -61,12 +64,23 @@ export default function Home({ postsPagination }: HomeProps) {
  
         { results.map(result => (
           <div key={result.uid} className={styles.post}>
-            <a href="#">{result.data.title}</a>
+            <Link href={`/post/${result.uid}`}>
+              <a>{result.data.title}</a>
+            </Link>
             <p>{result.data.subtitle}</p>
             <div className={styles.postDetails}>
               <time>
                 <FiCalendar />
-                {result.first_publication_date}
+                { 
+                  format(
+                    new Date(result.first_publication_date),
+                    "dd MMM yyyy",
+                    {
+                      locale: ptBR
+                    }
+                  )
+                  // result.first_publication_date
+                }
               </time>
               <div>
                 <FiUser />
@@ -104,7 +118,7 @@ export const getStaticProps: GetStaticProps = async () => {
 
   const results = postsResponse.results.map(post => {
     return {
-      uid: post,
+      uid: post.uid,
       first_publication_date: post.first_publication_date,
       data: {
         title: post.data.title,
