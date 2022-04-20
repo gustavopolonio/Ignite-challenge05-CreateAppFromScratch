@@ -4,7 +4,7 @@ import { createClient } from '../services/prismic';
 import { useState } from 'react'
 import { format } from 'date-fns'
 import ptBR from 'date-fns/locale/pt-BR'
-
+import Prismic from '@prismicio/client';
 import { FiCalendar } from 'react-icons/fi'
 import { FiUser } from 'react-icons/fi'
 
