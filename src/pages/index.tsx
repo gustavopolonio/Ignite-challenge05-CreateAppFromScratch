@@ -1,6 +1,6 @@
 import { GetStaticProps } from 'next';
 import Link from 'next/link'
-import { createClient } from '../services/prismic';
+import { getPrismicClient } from '../services/prismic';
 import { useState } from 'react'
 import { format } from 'date-fns'
 import ptBR from 'date-fns/locale/pt-BR'
@@ -107,10 +107,18 @@ export default function Home({ postsPagination }: HomeProps) {
 }
 
 export const getStaticProps: GetStaticProps = async () => {
-  const prismic = createClient()
-  const postsResponse = await prismic.getByType('Posts', {
-    pageSize: 1
-  })
+  const prismic = getPrismicClient()
+  // const postsResponse = await prismic.getByType('Posts', {
+  //   pageSize: 1
+  // })
+
+  const postsResponse = await prismic.query(
+    [Prismic.predicates.at('document.type', 'Posts')],
+    {
+      fetch: ['post.title', 'post.subtitle', 'post.author'],
+      pageSize: 3,
+    }
+  );
 
   // console.log('post', JSON.stringify(postsResponse, null, 2))
   const next_page = postsResponse.next_page
