@@ -19,3 +19,4 @@ export function getPrismicClient(req?: unknown): DefaultClient {
 
   return prismic;
 }
+

@@ -41,13 +41,16 @@ export default function Post({ post }: PostProps) {
     return <h1>Carregando...</h1>
   }
 
-  console.log('post', post)
-
   // Read time - considering human reads 200 words per minute
   const words = post.data.content.reduce((acc, content) => {
-    acc += content.heading?.split(' ').length
+    
+    acc += content.heading === null ? (
+      0
+    ) : (
+      content.heading?.split(' ').length 
+    ) 
 
-    content.body.map(cont => {
+    content.body?.map(cont => {
       acc += cont.text.split(' ').length
     })
 
